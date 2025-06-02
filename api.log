@@ -1,1 +1,6 @@
 2025-06-02 16:01:09,784 - services.background_remover - INFO - Loaded model: u2net
+2025-06-02 16:09:10,100 - services.background_remover - INFO - Loaded model: u2net
+2025-06-02 16:09:44,999 - services.background_remover - INFO - Loaded model: u2net
+2025-06-02 16:22:55,206 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-02 16:23:03,298 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-02 16:24:37,223 - src.server - INFO - Processed 25CorC8StiRay2drBluFR2_800.jpg in 0.27 seconds

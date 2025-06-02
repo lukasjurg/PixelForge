@@ -3,6 +3,7 @@ from rembg import remove, new_session
 from PIL import Image
 import logging
 import os
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +30,22 @@ class BackgroundRemover:
         if not output_path:
             output_path = f"no_bg_{os.path.basename(input_path)}"
 
-        with open(input_path, "rb") as f:
-            result = self.process_image(f.read())
+        # Resize image before processing
+        with Image.open(input_path) as img:
+            # Convert to RGB if needed (rembg requires RGB)
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            # Resize to max 500px while preserving aspect ratio
+            img.thumbnail((500, 500), Image.Resampling.LANCZOS)
+            # Save to bytes for rembg
+            buffer = io.BytesIO()
+            img.save(buffer, format="PNG")
+            input_data = buffer.getvalue()
 
+        # Process with rembg
+        result = self.process_image(input_data)
+
+        # Save the result
         with open(output_path, "wb") as f:
             f.write(result)
 
