@@ -1,165 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-  <ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ExtensionBundleId="com.pixelforge.bgremoval" ExtensionBundleVersion="1.0" Version="12.0">
-      <ExtensionList>
-          <Extension Id="com.pixelforge.bgremoval.panel1" Version="12.0.0"/>
-          <Extension Id="com.pixelforge.bgremoval.panel2" Version="12.0.0"/>
-          <Extension Id="com.pixelforge.bgremoval.modaldialog" Version="12.0.0"/>
-          <Extension Id="com.pixelforge.bgremoval.modeless" Version="12.0.0"/>
-      </ExtensionList>
-      <ExecutionEnvironment>
-          <HostList>
-              <Host Name="PPRO" Version="25.2"/> <!-- Updated to match Premiere Pro 25.2.3 -->
-              <!-- Removed other hosts to focus on Premiere Pro; add back if needed -->
-          </HostList>
-          <LocaleList>
-              <Locale Code="All"/>
-          </LocaleList>
-          <RequiredRuntimeList>
-              <RequiredRuntime Name="CSXS" Version="12.0"/>
-          </RequiredRuntimeList>
-      </ExecutionEnvironment>
-      <DispatchInfoList>
-          <Extension Id="com.pixelforge.bgremoval.panel1">
-              <DispatchInfo>
-                  <Resources>
-                      <MainPath>./html/index.html</MainPath>
-                      <ScriptPath>./jsx/core.jsx</ScriptPath>
-                      <CEFCommandLine>
-                          <Parameter>--enable-speech-input</Parameter>
-                          <Parameter>--enable-media-stream</Parameter>
-                          <Parameter>--enable-nodejs</Parameter>
-                      </CEFCommandLine>
-                  </Resources>
-                  <Lifecycle>
-                      <AutoVisible>true</AutoVisible>
-                  </Lifecycle>
-                  <UI>
-                      <Type>Panel</Type>
-                      <Menu>PixelForge BG Removal Panel 1</Menu>
-                      <Geometry>
-                          <Size>
-                              <Height>580</Height>
-                              <Width>1020</Width>
-                          </Size>
-                          <MaxSize>
-                              <Height>800</Height>
-                              <Width>1200</Width>
-                          </MaxSize>
-                          <MinSize>
-                              <Height>400</Height>
-                              <Width>600</Width>
-                          </MinSize>
-                      </Geometry>
-                      <Icons>
-                          <Icon Type="Normal">./TeEx_HTML_TEST_23x23_N.png</Icon>
-                          <Icon Type="RollOver">./TeEx_HTML_TEST_23x23_R.png</Icon>
-                          <Icon Type="DarkNormal">./TeEx_HTML_TEST_23x23_DN.png</Icon>
-                          <Icon Type="DarkRollOver">./TeEx_HTML_TEST_23x23_DR.png</Icon>
-                      </Icons>
-                  </UI>
-              </DispatchInfo>
-          </Extension>
-          <Extension Id="com.pixelforge.bgremoval.panel2">
-              <DispatchInfo>
-                  <Resources>
-                      <MainPath>./html/index.html</MainPath>
-                      <ScriptPath>./jsx/core.jsx</ScriptPath>
-                      <CEFCommandLine>
-                          <Parameter>--enable-speech-input</Parameter>
-                          <Parameter>--enable-media-stream</Parameter>
-                          <Parameter>--cep-disable-authentication</Parameter>
-                      </CEFCommandLine>
-                  </Resources>
-                  <Lifecycle>
-                      <AutoVisible>true</AutoVisible>
-                  </Lifecycle>
-                  <UI>
-                      <Type>Panel</Type>
-                      <Menu>PixelForge BG Removal Panel 2</Menu>
-                      <Geometry>
-                          <Size>
-                              <Height>580</Height>
-                              <Width>1020</Width>
-                          </Size>
-                          <MaxSize>
-                              <Height>800</Height>
-                              <Width>1200</Width>
-                          </MaxSize>
-                          <MinSize>
-                              <Height>400</Height>
-                              <Width>600</Width>
-                          </MinSize>
-                      </Geometry>
-                  </UI>
-              </DispatchInfo>
-          </Extension>
-          <Extension Id="com.pixelforge.bgremoval.modaldialog">
-              <DispatchInfo>
-                  <Resources>
-                      <MainPath>./html/index.html</MainPath>
-                      <ScriptPath>./jsx/core.jsx</ScriptPath>
-                      <CEFCommandLine>
-                          <Parameter>--enable-speech-input</Parameter>
-                          <Parameter>--enable-media-stream</Parameter>
-                          <Parameter>--enable-nodejs</Parameter>
-                      </CEFCommandLine>
-                  </Resources>
-                  <Lifecycle>
-                      <AutoVisible>true</AutoVisible>
-                  </Lifecycle>
-                  <UI>
-                      <Type>ModalDialog</Type>
-                      <Menu>PixelForge BG Removal Modal Dialog</Menu>
-                      <Geometry>
-                          <Size>
-                              <Height>580</Height>
-                              <Width>1020</Width>
-                          </Size>
-                          <MaxSize>
-                              <Height>800</Height>
-                              <Width>1200</Width>
-                          </MaxSize>
-                          <MinSize>
-                              <Height>400</Height>
-                              <Width>600</Width>
-                          </MinSize>
-                      </Geometry>
-                  </UI>
-              </DispatchInfo>
-          </Extension>
-          <Extension Id="com.pixelforge.bgremoval.modeless">
-              <DispatchInfo>
-                  <Resources>
-                      <MainPath>./html/index.html</MainPath>
-                      <ScriptPath>./jsx/core.jsx</ScriptPath>
-                      <CEFCommandLine>
-                          <Parameter>--enable-speech-input</Parameter>
-                          <Parameter>--enable-media-stream</Parameter>
-                          <Parameter>--enable-nodejs</Parameter>
-                      </CEFCommandLine>
-                  </Resources>
-                  <Lifecycle>
-                      <AutoVisible>true</AutoVisible>
-                  </Lifecycle>
-                  <UI>
-                      <Type>Modeless</Type>
-                      <Menu>PixelForge BG Removal Modeless Dialog</Menu>
-                      <Geometry>
-                          <Size>
-                              <Height>580</Height>
-                              <Width>1020</Width>
-                          </Size>
-                          <MaxSize>
-                              <Height>800</Height>
-                              <Width>1200</Width>
-                          </MaxSize>
-                          <MinSize>
-                              <Height>400</Height>
-                              <Width>600</Width>
-                          </MinSize>
-                      </Geometry>
-                  </UI>
-              </DispatchInfo>
-          </Extension>
-      </DispatchInfoList>
-  </ExtensionManifest>
+    <ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ExtensionBundleId="com.pixelforge.bgremoval" ExtensionBundleVersion="1.0" Version="12.0">
+        <ExtensionList>
+            <Extension Id="com.pixelforge.bgremoval.panel1" Version="12.0.0"/>
+        </ExtensionList>
+        <ExecutionEnvironment>
+            <HostList>
+                <Host Name="PPRO" Version="25.2"/>
+            </HostList>
+            <LocaleList>
+                <Locale Code="All"/>
+            </LocaleList>
+            <RequiredRuntimeList>
+                <RequiredRuntime Name="CSXS" Version="12.0"/>
+            </RequiredRuntimeList>
+        </ExecutionEnvironment>
+        <DispatchInfoList>
+            <Extension Id="com.pixelforge.bgremoval.panel1">
+                <DispatchInfo>
+                    <Resources>
+                        <MainPath>./html/index.html</MainPath>
+                        <ScriptPath>./jsx/core.jsx</ScriptPath>
+                        <CEFCommandLine>
+                            <Parameter>--enable-speech-input</Parameter>
+                            <Parameter>--enable-media-stream</Parameter>
+                            <Parameter>--enable-nodejs</Parameter>
+                        </CEFCommandLine>
+                    </Resources>
+                    <Lifecycle>
+                        <AutoVisible>true</AutoVisible>
+                    </Lifecycle>
+                    <UI>
+                        <Type>Panel</Type>
+                        <Menu>PixelForge BG Removal Panel 1</Menu>
+                        <Geometry>
+                            <Size>
+                                <Height>580</Height>
+                                <Width>1020</Width>
+                            </Size>
+                            <MaxSize>
+                                <Height>800</Height>
+                                <Width>1200</Width>
+                            </MaxSize>
+                            <MinSize>
+                                <Height>400</Height>
+                                <Width>600</Width>
+                            </MinSize>
+                        </Geometry>
+                        <Icons>
+                            <Icon Type="Normal">./TeEx_HTML_TEST_23x23_N.png</Icon>
+                            <Icon Type="RollOver">./TeEx_HTML_TEST_23x23_R.png</Icon>
+                            <Icon Type="DarkNormal">./TeEx_HTML_TEST_23x23_DN.png</Icon>
+                            <Icon Type="DarkRollOver">./TeEx_HTML_TEST_23x23_DR.png</Icon>
+                        </Icons>
+                    </UI>
+                </DispatchInfo>
+            </Extension>
+        </DispatchInfoList>
+    </ExtensionManifest>

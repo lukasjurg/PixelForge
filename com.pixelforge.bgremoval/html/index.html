@@ -1,75 +1,155 @@
 <!DOCTYPE html>
-  <html>
-  <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <title>PixelForge BG Removal</title>
-      <style>
-          body {
-              font-family: Arial, sans-serif;
-              padding: 10px;
-              background-color: #f5f5f5;
-              margin: 0;
-          }
-          #filePicker {
-              width: 200px;
-              margin-right: 10px;
-              padding: 5px;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-          }
-          button {
-              margin: 5px 0;
-              padding: 5px 10px;
-              border: none;
-              border-radius: 4px;
-              background-color: #0078d4;
-              color: white;
-              cursor: pointer;
-          }
-          button:hover {
-              background-color: #005a9e;
-          }
-          #status {
-              margin-top: 10px;
-              color: #333;
-              font-weight: bold;
-          }
-      </style>
-  </head>
-  <body>
-      <input type="text" id="filePicker" placeholder="No file selected" readonly>
-      <button id="browseBtn">Browse...</button>
-      <button id="processBtn">Remove Background</button>
-      <div id="status">Ready</div>
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>PixelForge BG Removal</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 10px;
+                background-color: #f5f5f5;
+                margin: 0;
+            }
+            #filePicker {
+                width: 200px;
+                margin-right: 10px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            button {
+                margin: 5px 0;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 4px;
+                background-color: #0078d4;
+                color: white;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #005a9e;
+            }
+            #status {
+                margin-top: 10px;
+                color: #333;
+                font-weight: bold;
+            }
+            #imagePreview {
+                margin-top: 20px;
+                max-width: 100%;
+                max-height: 400px;
+                border: 1px solid #ccc;
+                display: none;
+            }
+            #imagePath {
+                margin-top: 10px;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <input type="text" id="filePicker" placeholder="No file selected" readonly>
+        <button id="browseBtn">Browse...</button>
+        <button id="processBtn" disabled>Remove Background</button>
+        <div id="status">Ready</div>
+        <div id="imagePreviewContainer">
+            <img id="imagePreview" alt="Image Preview">
+            <div id="imagePath"></div>
+        </div>
 
-      <script src="../CSInterface.js"></script>
-      <script>
-          const csInterface = new CSInterface();
-          const filePicker = document.getElementById('filePicker');
-          const status = document.getElementById('status');
+        <script src="../CSInterface.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM fully loaded');
 
-          document.getElementById('browseBtn').addEventListener('click', () => {
-              csInterface.evalScript('app.openFileDialog("Select an image", "*.jpg;*.png")', (filePath) => {
-                  if (filePath) {
-                      filePicker.value = filePath;
-                      status.textContent = 'Image selected: ' + filePath.split('\\').pop();
-                  } else {
-                      status.textContent = 'No file selected';
-                  }
-              });
-          });
+                const csInterfaceScript = document.querySelector('script[src="../CSInterface.js"]');
+                if (!csInterfaceScript || !csInterfaceScript.src) {
+                    console.error('CSInterface.js script not found or failed to load');
+                    document.getElementById('status').textContent = 'Error: CSInterface.js not loaded. Check path.';
+                    return;
+                }
 
-          document.getElementById('processBtn').addEventListener('click', () => {
-              const filePath = filePicker.value;
-              if (filePath && filePath !== 'No file selected') {
-                  status.textContent = 'Processing...';
-                  setTimeout(() => {
-                      status.textContent = 'Processing complete: Processed image saved as no_bg_' + filePath.split('\\').pop();
-                  }, 1000);
-              } else {
-                  status.textContent = 'Please select an image';
-              }
-          });
-      </script>
-  </body>
-  </html>
+                if (typeof CSInterface === 'undefined') {
+                    console.error('CSInterface object not defined after script load');
+                    document.getElementById('status').textContent = 'Error: CEP not initialized. CSInterface unavailable.';
+                    return;
+                }
+
+                const csInterface = new CSInterface();
+                const filePicker = document.getElementById('filePicker');
+                const status = document.getElementById('status');
+                const processBtn = document.getElementById('processBtn');
+                const imagePreview = document.getElementById('imagePreview');
+                const imagePathDisplay = document.getElementById('imagePath');
+
+                if (!csInterface) {
+                    console.error('CSInterface initialization failed');
+                    status.textContent = 'Error: CEP initialization failed';
+                    return;
+                }
+
+                console.log('CSInterface initialized:', csInterface);
+                status.textContent = 'Ready';
+
+                document.getElementById('browseBtn').addEventListener('click', () => {
+                    console.log('Browse button clicked');
+                    try {
+                        csInterface.evalScript('openFileDialog()', (result) => {
+                            console.log('File dialog result:', result);
+                            if (result && result !== 'null' && result !== 'undefined') {
+                                filePicker.value = result;
+                                status.textContent = 'Image selected: ' + result.split('\\').pop();
+                                imagePathDisplay.textContent = 'Path: ' + result;
+                                imagePreview.src = 'https://via.placeholder.com/300x200?text=Original+Image';
+                                imagePreview.style.display = 'block';
+                                processBtn.disabled = false;
+                            } else {
+                                status.textContent = 'No file selected';
+                                imagePreview.style.display = 'none';
+                                processBtn.disabled = true;
+                            }
+                        });
+                    } catch (error) {
+                        console.error('EvalScript error:', error);
+                        status.textContent = 'Error: ' + error.message || 'File dialog failed';
+                    }
+                });
+
+                document.getElementById('processBtn').addEventListener('click', () => {
+                    console.log('Remove Background button clicked');
+                    const filePath = filePicker.value;
+                    if (filePath && filePath !== 'No file selected') {
+                        status.textContent = 'Processing...';
+                        processBtn.disabled = true;
+
+                        const formData = new FormData();
+                        formData.append('image_path', filePath);
+
+                        fetch('http://localhost:8000/remove_bg', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            const url = URL.createObjectURL(blob);
+                            imagePreview.src = url;
+                            status.textContent = 'Background removed!';
+                        })
+                        .catch(error => {
+                            console.error('Fetch error:', error);
+                            status.textContent = 'Error: ' + error.message;
+                        })
+                        .finally(() => {
+                            processBtn.disabled = false;
+                        });
+                    } else {
+                        status.textContent = 'Please select an image';
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>

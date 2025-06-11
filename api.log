@@ -6,3 +6,24 @@
 2025-06-02 16:24:37,223 - src.server - INFO - Processed 25CorC8StiRay2drBluFR2_800.jpg in 0.27 seconds
 2025-06-02 17:15:10,267 - services.background_remover - INFO - Loaded model: u2netp
 2025-06-10 15:09:04,895 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:00:49,159 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:00:49,164 - fastapi - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2025-06-11 18:01:33,897 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:02:06,546 - src.server - ERROR - Processing failed: 400: Image path does not exist
+2025-06-11 18:02:13,857 - src.server - ERROR - Processing failed: 400: Image path does not exist
+2025-06-11 18:06:50,279 - src.server - ERROR - Processing failed: 400: Image path does not exist
+2025-06-11 18:07:49,390 - src.server - INFO - Processed test.jpg in 0.28 seconds
+2025-06-11 18:15:42,923 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:18:21,384 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:26:04,510 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:26:34,490 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:32:17,086 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:35:52,441 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:48:36,077 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:48:44,137 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 18:49:13,148 - src.server - INFO - Received image_path: C:\Users\Programming\Desktop\Praktika\sc\test.jpg
+2025-06-11 18:49:13,412 - src.server - INFO - Processed test.jpg in 0.26 seconds

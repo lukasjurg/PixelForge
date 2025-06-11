@@ -1,5 +1,5 @@
 from typing import Optional, List
-from fastapi import FastAPI, UploadFile, File, HTTPException, status
+from fastapi import FastAPI, UploadFile, File, HTTPException, status, Form
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
@@ -53,44 +53,39 @@ async def health_check():
         "timestamp": datetime.now().isoformat()
     }
 
-@app.post("/remove_bg", response_class=FileResponse)
-async def remove_background(file: UploadFile = File(...)):
-    start_time = time.time()  # Start timing
+@app.post("/remove_bg")
+async def remove_background(image_path: str = Form(...)):
+    start_time = time.time()
+    logger.info(f"Received image_path: {image_path}")
     try:
-        # Early validation of file size before saving
-        content = await file.read()
-        if len(content) > 5 * 1024 * 1024:  # 5MB limit
+        if not image_path or not isinstance(image_path, str):
+            raise HTTPException(status_code=400, detail="Invalid image path provided")
+        if not os.path.exists(image_path):
+            logger.error(f"Path does not exist: {image_path}")
+            raise HTTPException(status_code=400, detail="Image path does not exist on server")
+        if os.path.getsize(image_path) > 5 * 1024 * 1024:  # 5MB limit
             raise HTTPException(status_code=400, detail="File exceeds 5MB limit")
 
         temp_id = uuid.uuid4()
-        input_path = f"temp_{temp_id}.png"
         output_path = f"result_{temp_id}.png"
 
-        # Save uploaded file
-        with open(input_path, "wb") as f:
-            f.write(content)
+        remover.validate_image(image_path)
+        result_path = remover.process_and_save(image_path, output_path)
 
-        # Validate and process image
-        remover.validate_image(input_path)
-        result_path = remover.process_and_save(input_path, output_path)
-
-        # Log timing
         elapsed_time = time.time() - start_time
-        logger.info(f"Processed {file.filename} in {elapsed_time:.2f} seconds")
+        logger.info(f"Processed {os.path.basename(image_path)} in {elapsed_time:.2f} seconds")
 
         return FileResponse(
             result_path,
             media_type="image/png",
-            headers={"Content-Disposition": f"attachment; filename=no_bg_{file.filename}"}
+            headers={"Content-Disposition": f"attachment; filename=no_bg_{os.path.basename(image_path)}"}
         )
-
     except Exception as e:
         logger.error(f"Processing failed: {str(e)}")
         raise HTTPException(status_code=422, detail=str(e))
     finally:
-        if os.path.exists(input_path):
-            os.remove(input_path)
-
+        if os.path.exists(image_path) and image_path.startswith("temp_"):
+            os.remove(image_path)
 @app.post("/batch_remove", response_model=List[BatchResult])
 async def batch_remove(files: List[UploadFile] = File(...)):
     if len(files) > 10:
