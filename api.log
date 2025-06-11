@@ -27,3 +27,4 @@ pip install python-multipart
 2025-06-11 18:48:44,137 - services.background_remover - INFO - Loaded model: u2netp
 2025-06-11 18:49:13,148 - src.server - INFO - Received image_path: C:\Users\Programming\Desktop\Praktika\sc\test.jpg
 2025-06-11 18:49:13,412 - src.server - INFO - Processed test.jpg in 0.26 seconds
+2025-06-11 18:55:34,775 - services.background_remover - INFO - Loaded model: u2netp
