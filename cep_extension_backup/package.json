@@ -1,0 +1,12 @@
+{
+    "name": "cep_extension",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+      "start": "echo 'Starting CEP development' && mkdir dist 2>nul && copy CSXS\\manifest.xml dist\\manifest.xml && xcopy html dist\\html\\ /E /Y /D && xcopy jsx dist\\jsx\\ /E /Y /D"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": ""
+  }
