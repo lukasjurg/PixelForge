@@ -166,6 +166,7 @@
             updateStatus('Ready');
 
             let originalImageUrl = null;
+            let processedImageUrl = null;
             let isShowingOriginal = false;
 
             function updateStatus(message, isError = false) {
@@ -187,6 +188,7 @@
                             imagePreview.style.display = 'none';
                             toggleViewBtn.style.display = 'none';
                             originalImageUrl = null;
+                            processedImageUrl = null;
                             isShowingOriginal = false;
                         } else {
                             updateStatus('No file selected');
@@ -221,8 +223,8 @@
                         return response.blob();
                     })
                     .then(blob => {
-                        const url = URL.createObjectURL(blob);
-                        imagePreview.src = url;
+                        processedImageUrl = URL.createObjectURL(blob);
+                        imagePreview.src = processedImageUrl;
                         imagePreview.style.display = 'block';
                         
                         fetch('/get_original', {
@@ -321,6 +323,7 @@
                 saveBtn.disabled = true;
                 toggleViewBtn.style.display = 'none';
                 originalImageUrl = null;
+                processedImageUrl = null;
                 isShowingOriginal = false;
                 updateStatus('Selection cleared');
             });
@@ -334,25 +337,13 @@
                 }
 
                 if (isShowingOriginal) {
-                    const formData = new FormData();
-                    formData.append('image_path', filePath);
-                    fetch('/remove_bg', {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Toggle fetch failed: ${response.status}`);
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        imagePreview.src = URL.createObjectURL(blob);
+                    if (processedImageUrl) {
+                        imagePreview.src = processedImageUrl;
                         updateStatus('Showing processed view');
                         isShowingOriginal = false;
-                    })
-                    .catch(error => {
-                        console.error('Toggle error:', error);
-                        updateStatus('Error toggling to processed view', true);
-                    });
+                    } else {
+                        updateStatus('Processed image not available', true);
+                    }
                 } else {
                     if (originalImageUrl) {
                         imagePreview.src = originalImageUrl;

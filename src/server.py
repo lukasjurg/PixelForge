@@ -2,7 +2,6 @@ from typing import Optional, List
 from fastapi import FastAPI, Form, HTTPException, status, File, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import logging
 from datetime import datetime
@@ -13,7 +12,7 @@ from rembg import remove, new_session
 from PIL import Image
 import io
 
-# Get port from environment variable
+# Get port from environment variable for local use
 PORT = int(os.environ.get("PORT", 8000))
 
 # Configure logging
@@ -29,18 +28,18 @@ logger = logging.getLogger(__name__)
 
 # BackgroundRemover class
 class BackgroundRemover:
-    def __init__(self, model_name: str = "u2net"):
+    def __init__(self, model_name: str = "u2netp"):
         self.model_name = model_name
         self.session = None
-        self._initialize_model()
 
     def _initialize_model(self):
-        try:
-            self.session = new_session(self.model_name)
-            logger.info(f"Loaded model: {self.model_name}")
-        except Exception as e:
-            logger.error(f"Model loading failed: {str(e)}")
-            raise RuntimeError(f"Could not load model {self.model_name}") from e
+        if not self.session:
+            try:
+                self.session = new_session(self.model_name)
+                logger.info(f"Loaded model: {self.model_name}")
+            except Exception as e:
+                logger.error(f"Model loading failed: {str(e)}")
+                raise RuntimeError(f"Could not load model {self.model_name}") from e
 
     def process_image(self, input_data: bytes) -> bytes:
         if not self.session:
@@ -103,7 +102,6 @@ app = FastAPI(
 )
 
 app.add_middleware(GZipMiddleware)
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 @app.get("/health", response_model=HealthCheck)
 async def health_check():
