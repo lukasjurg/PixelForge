@@ -28,3 +28,16 @@ pip install python-multipart
 2025-06-11 18:49:13,148 - src.server - INFO - Received image_path: C:\Users\Programming\Desktop\Praktika\sc\test.jpg
 2025-06-11 18:49:13,412 - src.server - INFO - Processed test.jpg in 0.26 seconds
 2025-06-11 18:55:34,775 - services.background_remover - INFO - Loaded model: u2netp
+2025-06-11 19:33:03,457 - src.server - INFO - Loaded model: u2netp
+2025-06-11 19:33:12,545 - src.server - INFO - Loaded model: u2netp
+2025-06-11 19:34:08,525 - src.server - INFO - Received image_path: C:\Users\Programming\Desktop\Praktika\sc\test.jpg
+2025-06-11 19:34:08,786 - src.server - INFO - Processed test.jpg in 0.26 seconds
+2025-06-11 19:34:26,714 - src.server - ERROR - Save failed: 400: Save path not provided
+2025-06-11 19:38:56,277 - src.server - INFO - Loaded model: u2netp
+2025-06-11 19:39:44,806 - src.server - INFO - Loaded model: u2netp
+2025-06-11 19:39:54,649 - src.server - INFO - Received image_path: C:\Users\Programming\Desktop\Praktika\test.jpg
+2025-06-11 19:39:54,905 - src.server - INFO - Processed test.jpg in 0.26 seconds
+2025-06-11 19:40:03,906 - src.server - INFO - Received save_path: C:\Users\Programming\Desktop\Praktika\1.png
+2025-06-11 19:40:03,907 - src.server - INFO - Image saved to: C:\Users\Programming\Desktop\Praktika\1.png
+2025-06-11 19:53:10,057 - src.server - INFO - Loaded model: u2netp
+2025-06-11 21:24:19,080 - src.server - INFO - Loaded model: u2netp
