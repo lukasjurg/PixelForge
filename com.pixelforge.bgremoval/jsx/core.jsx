@@ -2,6 +2,7 @@
       try {
           var file = File.openDialog("Select an image", "*.jpg;*.png", false);
           if (file) {
+              $.writeln("Selected file: " + file.fsName);
               return file.fsName;
           } else {
               $.writeln("No file selected in openFileDialog");
@@ -28,38 +29,33 @@
       }
   }
 
+  // Commented out for now, as preview is removed
+  /*
   function readImageAsBase64(filePath) {
       $.writeln("Starting readImageAsBase64 for: " + filePath);
       var file = new File(filePath);
       if (file.exists) {
-          $.writeln("File exists: " + file.fsName);
-          file.open('r');
-          $.writeln("File opened for reading");
-          var content = "";
           try {
-              while (!file.eof) {
-                  content += file.read(1024); // Read in 1KB chunks
-              }
-              $.writeln("Content read, total length: " + content.length);
+              file.open('r');
+              var content = file.read();
+              $.writeln("File content length: " + (content ? content.length : 0));
               file.close();
-              $.writeln("File closed");
-              if (content.length > 0) {
-                  var base64Prefix = "data:image/png;base64,";
+              if (content && content.length > 0) {
                   try {
                       var base64String = $.toBase64(content);
-                      $.writeln("Base64 conversion successful, length: " + base64String.length);
-                      return base64Prefix + base64String;
+                      $.writeln("Base64 conversion result length: " + (base64String ? base64String.length : 0));
+                      return "data:image/png;base64," + base64String;
                   } catch (e) {
-                      $.writeln("Base64 conversion failed: " + e.toString());
+                      $.writeln("Base64 conversion error: " + e.toString());
                       return null;
                   }
               } else {
-                  $.writeln("No content read");
+                  $.writeln("No content read from file");
                   return null;
               }
           } catch (e) {
-              $.writeln("Error reading file: " + e.toString());
-              file.close();
+              $.writeln("File read error: " + e.toString());
+              if (file) file.close();
               return null;
           }
       } else {
@@ -67,3 +63,4 @@
           return null;
       }
   }
+  */

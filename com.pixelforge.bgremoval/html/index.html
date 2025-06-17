@@ -1,282 +1,369 @@
 <!DOCTYPE html>
-  <html>
-  <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <title>PixelForge BG Removal</title>
-      <style>
-          body {
-              font-family: 'Segoe UI', Arial, sans-serif;
-              padding: 15px;
-              background-color: #EBEEED;
-              margin: 0;
-              display: flex;
-              flex-direction: column;
-              height: 100%;
-              color: #333;
-          }
-          .container {
-              max-width: 600px;
-              margin: 0 auto;
-              background: #2d2d2d;
-              padding: 20px;
-              border-radius: 8px;
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-          }
-          .header {
-              text-align: center;
-              margin-bottom: 20px;
-          }
-          .header img {
-              max-width: 300px;
-              height: auto;
-          }
-          #filePicker {
-              width: 70%;
-              padding: 8px;
-              margin-right: 10px;
-              border: 1px solid #444;
-              border-radius: 4px;
-              font-size: 14px;
-              background-color: #333;
-              color: #d4d4d4;
-          }
-          button {
-              padding: 8px 15px;
-              margin: 5px 0;
-              border: none;
-              border-radius: 4px;
-              background-color: #0078d4;
-              color: white;
-              cursor: pointer;
-              font-size: 14px;
-              transition: background-color 0.3s;
-          }
-          button:hover {
-              background-color: #005a9e;
-          }
-          button:disabled {
-              background-color: #555;
-              cursor: not-allowed;
-          }
-          #status {
-              margin-top: 10px;
-              color: #b3b3b3;
-              font-weight: 500;
-              text-align: center;
-          }
-          .error {
-              color: #ff4444;
-              font-weight: bold;
-          }
-          #imagePreview {
-              margin-top: 20px;
-              max-width: 100%;
-              max-height: 400px;
-              border: 1px solid #444;
-              border-radius: 4px;
-              display: none;
-              object-fit: contain;
-              background-color: #333;
-          }
-          #imagePath {
-              margin-top: 10px;
-              color: #999;
-              font-size: 12px;
-              text-align: center;
-          }
-          .button-group {
-              display: flex;
-              gap: 10px;
-              justify-content: center;
-          }
-          #saveBtn {
-              background-color: #28a745;
-          }
-          #saveBtn:hover {
-              background-color: #218838;
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <div class="header">
-              <img src="../img/PixelForgeLogoWide.png" alt="PixelForge Logo">
-          </div>
-          <input type="text" id="filePicker" placeholder="No file selected" readonly>
-          <div class="button-group">
-              <button id="browseBtn">Browse...</button>
-              <button id="processBtn" disabled>Remove Background</button>
-              <button id="saveBtn" disabled>Save</button>
-          </div>
-          <div id="status">Ready</div>
-          <div id="imagePreviewContainer">
-              <img id="imagePreview" alt="Image Preview">
-              <div id="imagePath"></div>
-          </div>
-      </div>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PixelForge BG Removal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 15px;
+            background-color: #EBEEED;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 300px;
+            height: auto;
+        }
+        #filePicker {
+            width: 70%;
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #333;
+            color: #d4d4d4;
+        }
+        button {
+            padding: 8px 15px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            background-color: #0078d4;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 10px;
+            color: #b3b3b3;
+            font-weight: 500;
+            text-align: center;
+        }
+        .error {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        #imagePreview {
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            display: none;
+            object-fit: contain;
+            background-color: #333;
+        }
+        #imagePath {
+            margin-top: 10px;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        #saveBtn {
+            background-color: #28a745;
+        }
+        #saveBtn:hover {
+            background-color: #218838;
+        }
+        #clearBtn {
+            background-color: #dc3545;
+        }
+        #clearBtn:hover {
+            background-color: #c82333;
+        }
+        #toggleViewBtn {
+            background-color: #6c757d;
+        }
+        #toggleViewBtn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="img/PixelForgeLogoWide.png" alt="PixelForge Logo" onerror="console.error('Logo failed to load'); this.src='https://via.placeholder.com/300x100?text=Logo+Missing';">
+        </div>
+        <input type="text" id="filePicker" placeholder="No file selected" readonly>
+        <div class="button-group">
+            <button id="browseBtn">Browse...</button>
+            <button id="processBtn" disabled>Remove Background</button>
+            <button id="saveBtn" disabled>Save</button>
+            <button id="clearBtn">Clear</button>
+            <button id="toggleViewBtn" style="display:none;">Toggle View</button>
+        </div>
+        <div id="status">Ready</div>
+        <div id="imagePreviewContainer">
+            <img id="imagePreview" alt="Image Preview">
+            <div id="imagePath"></div>
+        </div>
+    </div>
 
-      <script src="../CSInterface.js"></script>
-      <script>
-          document.addEventListener('DOMContentLoaded', () => {
-              console.log('DOM fully loaded');
+    <script src="CSInterface.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded');
 
-              const csInterfaceScript = document.querySelector('script[src="../CSInterface.js"]');
-              if (!csInterfaceScript || !csInterfaceScript.src) {
-                  console.error('CSInterface.js script not found or failed to load');
-                  updateStatus('Error: CSInterface.js not loaded. Check path.', true);
-                  return;
-              }
+            const csInterfaceScript = document.querySelector('script[src="CSInterface.js"]');
+            if (!csInterfaceScript || !csInterfaceScript.src) {
+                console.error('CSInterface.js script not found or failed to load');
+                updateStatus('Error: CSInterface.js not loaded. Check path.', true);
+                return;
+            }
 
-              if (typeof CSInterface === 'undefined') {
-                  console.error('CSInterface object not defined after script load');
-                  updateStatus('Error: CEP not initialized. CSInterface unavailable.', true);
-                  return;
-              }
+            if (typeof CSInterface === 'undefined') {
+                console.error('CSInterface object not defined after script load');
+                updateStatus('Error: CEP not initialized. CSInterface unavailable.', true);
+                return;
+            }
 
-              const csInterface = new CSInterface();
-              const filePicker = document.getElementById('filePicker');
-              const status = document.getElementById('status');
-              const processBtn = document.getElementById('processBtn');
-              const saveBtn = document.getElementById('saveBtn');
-              const imagePreview = document.getElementById('imagePreview');
-              const imagePathDisplay = document.getElementById('imagePath');
+            const csInterface = new CSInterface();
+            const filePicker = document.getElementById('filePicker');
+            const status = document.getElementById('status');
+            const processBtn = document.getElementById('processBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const imagePreview = document.getElementById('imagePreview');
+            const imagePathDisplay = document.getElementById('imagePath');
+            const toggleViewBtn = document.getElementById('toggleViewBtn');
 
-              if (!csInterface) {
-                  console.error('CSInterface initialization failed');
-                  updateStatus('Error: CEP initialization failed.', true');
-                  return;
-              }
+            if (!csInterface) {
+                console.error('CSInterface initialization failed');
+                updateStatus('Error: CEP initialization failed.', true);
+                return;
+            }
 
-              console.log('CSInterface initialized:', csInterface);
-              updateStatus('Ready');
+            console.log('CSInterface initialized:', csInterface);
+            updateStatus('Ready');
 
-              function updateStatus(message, isError = false) {
-                  status.textContent = message;
-                  status.className = isError ? 'error' : '';
-              }
+            let originalImageUrl = null;
+            let isShowingOriginal = false;
 
-              document.getElementById('browseBtn').addEventListener('click', () => {
-                  console.log('Browse button clicked');
-                  try {
-                      csInterface.evalScript('openFileDialog()', (result) => {
-                          console.log('File dialog result:', result);
-                          if (result && result !== 'null' && result !== 'undefined') {
-                              filePicker.value = result;
-                              updateStatus('Image selected: ' + result.split('\\').pop());
-                              imagePathDisplay.textContent = 'Path: ' + result;
-                              try {
-                                  csInterface.evalScript(`readImageAsBase64("${result}")`, (base64Data) => {
-                                      console.log('Base64 data result:', base64Data);
-                                      if (base64Data && base64Data !== 'null' && base64Data !== 'undefined') {
-                                          imagePreview.src = base64Data;
-                                          imagePreview.style.display = 'block';
-                                      } else {
-                                          console.warn('Failed to load image preview, using placeholder. Data:', base64Data);
-                                          imagePreview.src = 'https://via.placeholder.com/300x200?text=Original+Image';
-                                          updateStatus('Error: Failed to load image preview.', true);
-                                      }
-                                  });
-                              } catch (previewError) {
-                                  console.error('Preview error:', previewError);
-                                  updateStatus('Error: Could not generate preview: ' + previewError.message, true);
-                              }
-                              processBtn.disabled = false;
-                              saveBtn.disabled = true;
-                          } else {
-                              updateStatus('No file selected');
-                              imagePreview.style.display = 'none';
-                              processBtn.disabled = true;
-                              saveBtn.disabled = true;
-                          }
-                      });
-                  } catch (error) {
-                      console.error('EvalScript error:', error);
-                      updateStatus('Error: File dialog failed: ' + error.message, true);
-                  }
-              });
+            function updateStatus(message, isError = false) {
+                status.textContent = message;
+                status.className = isError ? 'error' : '';
+            }
 
-              document.getElementById('processBtn').addEventListener('click', () => {
-                  console.log('Remove Background button clicked');
-                  const filePath = filePicker.value;
-                  if (filePath && filePath !== 'No file selected') {
-                      updateStatus('Processing...');
-                      processBtn.disabled = true;
+            document.getElementById('browseBtn').addEventListener('click', () => {
+                console.log('Browse button clicked');
+                try {
+                    csInterface.evalScript('openFileDialog()', (result) => {
+                        console.log('File dialog result:', result);
+                        if (result && result !== 'null' && result !== 'undefined') {
+                            filePicker.value = result;
+                            updateStatus('Image selected: ' + result.split('\\').pop());
+                            imagePathDisplay.textContent = 'Path: ' + result;
+                            processBtn.disabled = false;
+                            saveBtn.disabled = true;
+                            imagePreview.style.display = 'none';
+                            toggleViewBtn.style.display = 'none';
+                            originalImageUrl = null;
+                            isShowingOriginal = false;
+                        } else {
+                            updateStatus('No file selected');
+                            imagePreview.style.display = 'none';
+                            processBtn.disabled = true;
+                            saveBtn.disabled = true;
+                        }
+                    });
+                } catch (error) {
+                    console.error('EvalScript error stack:', error.stack || error);
+                    updateStatus('Error: File dialog failed: ' + (error.message || 'Unknown error'), true);
+                    imagePreview.style.display = 'none';
+                }
+            });
 
-                      const formData = new FormData();
-                      formData.append('image_path', filePath);
+            document.getElementById('processBtn').addEventListener('click', () => {
+                console.log('Remove Background button clicked');
+                const filePath = filePicker.value;
+                if (filePath && filePath !== 'No file selected') {
+                    updateStatus('Processing...');
+                    processBtn.disabled = true;
 
-                      fetch('http://localhost:8000/remove_bg', {
-                          method: 'POST',
-                          body: formData,
-                      })
-                      .then(response => {
-                          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                          return response.blob();
-                      })
-                      .then(blob => {
-                          const url = URL.createObjectURL(blob);
-                          imagePreview.src = url;
-                          updateStatus('Background removed!');
-                          saveBtn.disabled = false;
-                      })
-                      .catch(error => {
-                          console.error('Fetch error:', error);
-                          updateStatus('Error: Failed to remove background: ' + error.message, true);
-                          saveBtn.disabled = true;
-                      })
-                      .finally(() => {
-                          processBtn.disabled = false;
-                      });
-                  } else {
-                      updateStatus('Please select an image', true);
-                  }
-              });
+                    const formData = new FormData();
+                    formData.append('image_path', filePath);
 
-              document.getElementById('saveBtn').addEventListener('click', () => {
-                  console.log('Save button clicked');
-                  if (imagePreview.src && !imagePreview.src.includes('via.placeholder.com')) {
-                      try {
-                          csInterface.evalScript('saveFileDialog()', (result) => {
-                              console.log('Save dialog result:', result);
-                              if (result && result !== 'null' && result !== 'undefined') {
-                                  const savePath = result;
-                                  updateStatus('Saving...');
-                                  fetch(imagePreview.src)
-                                      .then(response => {
-                                          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                                          return response.blob();
-                                      })
-                                      .then(blob => {
-                                          const formData = new FormData();
-                                          formData.append('file', blob, 'no_bg_output.png');
-                                          formData.append('save_path', savePath);
-                                          console.log('Sending save_path:', savePath);
-                                          return fetch('http://localhost:8000/save_image', {
-                                              method: 'POST',
-                                              body: formData,
-                                          });
-                                      })
-                                      .then(response => {
-                                          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                                          updateStatus('Image saved to: ' + savePath);
-                                      })
-                                      .catch(error => {
-                                          console.error('Save error:', error);
-                                          updateStatus('Error saving image: ' + error.message, true);
-                                      });
-                              } else {
-                                  updateStatus('Save cancelled');
-                              }
-                          });
-                      } catch (saveError) {
-                          console.error('Save dialog error:', saveError);
-                          updateStatus('Error: Save failed: ' + saveError.message, true);
-                      }
-                  } else {
-                      updateStatus('No image to save', true);
-                  }
-              });
-          });
-      </script>
-  </body>
-  </html>
+                    fetch('/remove_bg', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        imagePreview.src = url;
+                        imagePreview.style.display = 'block';
+                        
+                        fetch('/get_original', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(originalResponse => {
+                            if (!originalResponse.ok) throw new Error(`Original fetch failed: ${originalResponse.status}`);
+                            return originalResponse.blob();
+                        })
+                        .then(originalBlob => {
+                            originalImageUrl = URL.createObjectURL(originalBlob);
+                            toggleViewBtn.style.display = 'inline-flex';
+                        })
+                        .catch(originalError => console.error('Original fetch error:', originalError));
+                        
+                        fetch('/get_metadata', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(metaResponse => metaResponse.json())
+                        .then(meta => {
+                            imagePathDisplay.textContent = `Path: ${filePath} | Size: ${meta.size}KB | Dimensions: ${meta.width}x${meta.height}`;
+                        })
+                        .catch(metaError => console.error('Metadata error:', metaError));
+                        
+                        updateStatus('Background removed!');
+                        saveBtn.disabled = false;
+                        isShowingOriginal = false;
+                    })
+                    .catch(error => {
+                        console.error('Fetch error stack:', error.stack || error);
+                        updateStatus('Error: Failed to remove background: ' + (error.message || 'Unknown error'), true);
+                        imagePreview.style.display = 'none';
+                        saveBtn.disabled = true;
+                    })
+                    .finally(() => {
+                        processBtn.disabled = false;
+                    });
+                } else {
+                    updateStatus('Please select an image', true);
+                }
+            });
+
+            document.getElementById('saveBtn').addEventListener('click', () => {
+                console.log('Save button clicked');
+                if (imagePreview.src && !imagePreview.src.includes('via.placeholder.com')) {
+                    try {
+                        csInterface.evalScript('saveFileDialog()', (result) => {
+                            console.log('Save dialog result:', result);
+                            if (result && result !== 'null' && result !== 'undefined') {
+                                const savePath = result;
+                                updateStatus('Saving...');
+                                fetch(imagePreview.src)
+                                    .then(response => {
+                                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                        return response.blob();
+                                    })
+                                    .then(blob => {
+                                        const formData = new FormData();
+                                        formData.append('file', blob, 'no_bg_output.png');
+                                        formData.append('save_path', savePath);
+                                        console.log('Sending save_path:', savePath);
+                                        return fetch('/save_image', {
+                                            method: 'POST',
+                                            body: formData,
+                                        });
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                        updateStatus('Image saved to: ' + savePath);
+                                    })
+                                    .catch(error => {
+                                        console.error('Save error stack:', error.stack || error);
+                                        updateStatus('Error saving image: ' + (error.message || 'Unknown error'), true);
+                                    });
+                            } else {
+                                updateStatus('Save cancelled');
+                            }
+                        });
+                    } catch (saveError) {
+                        console.error('Save dialog error stack:', saveError.stack || saveError);
+                        updateStatus('Error: Save failed: ' + (saveError.message || 'Unknown error'), true);
+                    }
+                } else {
+                    updateStatus('No image to save', true);
+                }
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                console.log('Clear button clicked');
+                filePicker.value = '';
+                imagePreview.style.display = 'none';
+                imagePathDisplay.textContent = '';
+                processBtn.disabled = true;
+                saveBtn.disabled = true;
+                toggleViewBtn.style.display = 'none';
+                originalImageUrl = null;
+                isShowingOriginal = false;
+                updateStatus('Selection cleared');
+            });
+
+            document.getElementById('toggleViewBtn').addEventListener('click', () => {
+                console.log('Toggle view clicked');
+                const filePath = filePicker.value;
+                if (!filePath || filePath === 'No file selected') {
+                    updateStatus('No image selected to toggle', true);
+                    return;
+                }
+
+                if (isShowingOriginal) {
+                    const formData = new FormData();
+                    formData.append('image_path', filePath);
+                    fetch('/remove_bg', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`Toggle fetch failed: ${response.status}`);
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        imagePreview.src = URL.createObjectURL(blob);
+                        updateStatus('Showing processed view');
+                        isShowingOriginal = false;
+                    })
+                    .catch(error => {
+                        console.error('Toggle error:', error);
+                        updateStatus('Error toggling to processed view', true);
+                    });
+                } else {
+                    if (originalImageUrl) {
+                        imagePreview.src = originalImageUrl;
+                        updateStatus('Showing original view');
+                        isShowingOriginal = true;
+                    } else {
+                        updateStatus('Original image not available', true);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 from typing import Optional, List
-from fastapi import FastAPI, Form, HTTPException, status, File, UploadFile, Request, Body
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, Form, HTTPException, status, File, UploadFile
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import logging
 from datetime import datetime
@@ -11,6 +12,9 @@ import time
 from rembg import remove, new_session
 from PIL import Image
 import io
+
+# Get port from environment variable
+PORT = int(os.environ.get("PORT", 8000))
 
 # Configure logging
 logging.basicConfig(
@@ -46,7 +50,7 @@ class BackgroundRemover:
     def process_and_save(self, input_path: str, output_path: Optional[str] = None) -> str:
         try:
             if not output_path:
-                output_path = f"no_bg_{os.path.basename(input_path)}"
+                output_path = f"result_{uuid.uuid4()}.png"
             with Image.open(input_path) as img:
                 if img.mode != "RGB":
                     img = img.convert("RGB")
@@ -99,6 +103,7 @@ app = FastAPI(
 )
 
 app.add_middleware(GZipMiddleware)
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 @app.get("/health", response_model=HealthCheck)
 async def health_check():
@@ -122,7 +127,7 @@ async def remove_background(image_path: str = Form(...)):
             raise HTTPException(status_code=400, detail="File exceeds 5MB limit")
 
         temp_id = uuid.uuid4()
-        output_path = f"result_{temp_id}.png"
+        output_path = os.path.join(os.getcwd(), f"result_{temp_id}.png")
 
         remover.validate_image(image_path)
         result_path = remover.process_and_save(image_path, output_path)
@@ -130,11 +135,15 @@ async def remove_background(image_path: str = Form(...)):
         elapsed_time = time.time() - start_time
         logger.info(f"Processed {os.path.basename(image_path)} in {elapsed_time:.2f} seconds")
 
-        return FileResponse(
-            result_path,
-            media_type="image/png",
-            headers={"Content-Disposition": f"attachment; filename=no_bg_{os.path.basename(image_path)}"}
-        )
+        def cleanup_response():
+            yield from open(result_path, "rb")
+            if os.path.exists(result_path):
+                os.remove(result_path)
+                logger.info(f"Cleaned up temporary file: {result_path}")
+
+        response = StreamingResponse(cleanup_response(), media_type="image/png")
+        response.headers["Content-Disposition"] = f"attachment; filename=no_bg_{os.path.basename(image_path)}"
+        return response
     except HTTPException as e:
         logger.error(f"HTTP error: {str(e.detail)}")
         raise
@@ -202,3 +211,46 @@ async def save_image(file: UploadFile = File(...), save_path: str = Form(None)):
     except Exception as e:
         logger.error(f"Save failed: {str(e)}")
         raise HTTPException(status_code=422, detail=str(e))
+
+@app.post("/get_metadata")
+async def get_metadata(image_path: str = Form(...)):
+    logger.info(f"Received metadata request for: {image_path}")
+    try:
+        if not os.path.exists(image_path):
+            raise HTTPException(status_code=400, detail="Image path does not exist on server")
+        with Image.open(image_path) as img:
+            size_kb = os.path.getsize(image_path) / 1024
+            width, height = img.size
+            return {"size": round(size_kb, 2), "width": width, "height": height}
+    except HTTPException as e:
+        logger.error(f"HTTP error: {str(e.detail)}")
+        raise
+    except Exception as e:
+        logger.error(f"Metadata retrieval failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.post("/get_original")
+async def get_original(image_path: str = Form(...)):
+    logger.info(f"Received original request for: {image_path}")
+    try:
+        if not os.path.exists(image_path):
+            raise HTTPException(status_code=400, detail="Image path does not exist on server")
+        if os.path.getsize(image_path) > 5 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File exceeds 5MB limit")
+        with Image.open(image_path) as img:
+            img.verify()
+        return FileResponse(
+            image_path,
+            media_type="image/png",
+            headers={"Content-Disposition": f"attachment; filename=original_{os.path.basename(image_path)}"}
+        )
+    except HTTPException as e:
+        logger.error(f"HTTP error: {str(e.detail)}")
+        raise
+    except Exception as e:
+        logger.error(f"Original retrieval failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
